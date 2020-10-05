@@ -14,7 +14,6 @@ async function getData(keyword) {
   )
     .then((response) => response.body)
     .then((data) => {
-      console.log(data);
       fs.writeFile(`${dir}dataStockxApi.json`, data, (error) => {
         if (error) throw error;
         console.log("Job done");
@@ -22,10 +21,21 @@ async function getData(keyword) {
     })
     .then(() => {
       getDataInfo();
-
-      const href = `https://stockx.com/${dataStockx.Products[0].urlKey}`;
+      return (href = dataStockx.Products[0].urlKey);
+    })
+    .then((href) => {
       getVariants(href);
     });
+
+  // const dir = "../data/";
+  // fs.mkdir(dir, { recursive: true }, (err) => {
+  //   if (err) throw err;
+  // });
+
+  // fs.writeFile(`${dir}stockX.json`, json2, (error) => {
+  //   if (error) throw error;
+  //   console.log("Job done");
+  // });
 }
 
 async function getDataInfo() {
@@ -45,76 +55,28 @@ async function getDataInfo() {
   product.styleId = dataStockx.Products[0].styleId;
   product.urlKey = dataStockx.Products[0].urlKey;
   product.url = `https://stockx.com/${product.urlKey}`;
-
-  console.log(product);
+  console.log("get info done");
+  return product;
 }
 
 async function getVariants(href) {
-  puppeteer.launch({ headless: false }).then(async (browser) => {
-    console.log("Running tests..");
-    const page = await browser.newPage();
-    page.setUserAgent(
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
-    );
-    await page.setExtraHTTPHeaders("access-control-allow-origin : *");
-    await page.goto(href);
-
-    //Confirm Localisation
-    const confirmLocalisation =
-      "#root > div.wrapper.css-1yozp93.e1hhn9fb0 > div.page-container.css-1rzs289.e1hhn9fb1 > section > div > div.css-1gxn59a.et9rxoe5";
-    const updateLocalisation =
-      "#root > div.wrapper.css-1yozp93.e1hhn9fb0 > div.page-container.css-1rzs289.e1hhn9fb1 > section > div";
-
-    await page.waitForSelector(confirmLocalisation || updateLocalisation);
-    if (confirmLocalisation) {
-      await page.click(
-        "#root > div.wrapper.css-1yozp93.e1hhn9fb0 > div.page-container.css-1rzs289.e1hhn9fb1 > section > div > div.css-1gxn59a.et9rxoe5 > button"
-      );
-    } else {
-      await page.click(
-        "#root > div.wrapper.css-1yozp93.e1hhn9fb0 > div.page-container.css-1rzs289.e1hhn9fb1 > section > div > img"
-      );
-    }
-
-    //Accept cookies
-    await page.click(
-      "#root > div.dialog-wrapper.cookie-dialog > div.dialog-actions > button"
-    );
-
-    await page.waitForNavigation({ waitUntil: "networkidle0" });
-
-    const lis = await page.evaluate(() => {
-      return document.querySelectorAll(".inset.css-8atqhb");
-
-      // return results;
+  await got(`https://stockx.com/api/products/${href}?includes=market`, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15",
+    },
+    http2: true,
+  })
+    .then((response) => JSON.parse(response.body))
+    .then((data) => {
+      const products = data.Product.children;
+      for (const key in products) {
+        const variants = {};
+        variants.size = Number(products[key].shoeSize);
+        variants.price = products[key].market.lowestAsk;
+        return variants;
+      }
     });
-    console.log(lis);
-
-    for (const li of lis) {
-      const variants = {};
-      variants.size = li.querySelector(".title").innerText;
-      variants.price = li.querySelector(".subtitle").innerText;
-      return variants;
-    }
-    console.log(li);
-
-    // await Promise.all([
-    //   await page.waitForNavigation(),
-    // await page.click("#menu-button-42"),
-    // ]);
-
-    // await page.waitForSelector(".chakra-menu__menuitem");
-
-    // const results = await page.$$eval(".chakra-menu__menuitem", (items) => {
-    //   return items.map((item) => {
-    //     const product = {};
-    //     product.size = item.querySelector(".title").innerText;
-    //     product.price = item.querySelector(".subtitle").innerText;
-    //     return product;
-    //   });
-    //   return results;
-    // });
-    browser.close();
-  });
+  console.log("get variants done");
 }
 getData("DA3595-100");
