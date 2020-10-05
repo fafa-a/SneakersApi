@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fetch = require("isomorphic-fetch");
 const fs = require("fs");
-
+const key = require("../key.json");
 puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
@@ -26,7 +26,7 @@ async function getInfo(keyword) {
 async function getVariants(href) {
   try {
     const response = await fetch(
-      "https://4bgyha3fmu-dsn.algolia.net/1/indexes/dev_products2/46515?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.30.0&x-algolia-application-id=4BGYHA3FMU&x-algolia-api-key=e1de1e2a0ec319eb6d78b7a462516981",
+      `https://4bgyha3fmu-dsn.algolia.net/1/indexes/dev_products2/46515?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.30.0&x-algolia-application-id=4BGYHA3FMU&x-algolia-api-key=${key.klekt.algolia}`,
       {
         headers: {
           accept: "application/json",

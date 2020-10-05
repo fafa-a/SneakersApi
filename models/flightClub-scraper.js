@@ -21,7 +21,6 @@ async function getInfo(keyword) {
       return document.querySelector(".sc-12ddmbl-0 > a").href;
     });
     const pathname = href.slice(27);
-
     getVariants(href, pathname);
     browser.close();
   });
@@ -54,7 +53,7 @@ async function getVariants(href, pathname) {
       const product = {};
       product.size = item.size.value;
       product.price = item.instantShipPriceOption.price.value;
-      //   console.log(product);
+
       return product;
     });
     const json2 = JSON.stringify(json);
