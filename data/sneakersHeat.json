@@ -1,0 +1,19 @@
+[
+  { "size": 4, "price": 25000 },
+  { "size": 4.5, "price": 23000 },
+  { "size": 5, "price": 24000 },
+  { "size": 5.5, "price": 20000 },
+  { "size": 6, "price": 21000 },
+  { "size": 6.5, "price": 23000 },
+  { "size": 7, "price": 25000 },
+  { "size": 7.5, "price": 23000 },
+  { "size": 8, "price": 23000 },
+  { "size": 8.5, "price": 23000 },
+  { "size": 9, "price": 23000 },
+  { "size": 9.5, "price": 23000 },
+  { "size": 10, "price": 23000 },
+  { "size": 10.5, "price": 24000 },
+  { "size": 11, "price": 24000 },
+  { "size": 11.5, "price": 24000 },
+  { "size": 12, "price": 24000 }
+]

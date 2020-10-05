@@ -1,0 +1,13 @@
+[
+  { "size": 7, "price": 22500 },
+  { "size": 7.5, "price": 22000 },
+  { "size": 8, "price": 21500 },
+  { "size": 8.5, "price": 25000 },
+  { "size": 9, "price": 23500 },
+  { "size": 9.5, "price": 25500 },
+  { "size": 10, "price": 23000 },
+  { "size": 10.5, "price": 25500 },
+  { "size": 11, "price": 21000 },
+  { "size": 11.5, "price": 24000 },
+  { "size": 12, "price": 24500 }
+]
