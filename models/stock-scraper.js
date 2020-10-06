@@ -1,12 +1,8 @@
 const got = require("got");
 const fs = require("fs");
-const puppeteer = require("puppeteer-extra");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 
-const dataStockx = require("./data/dataStockxApi.json");
+const dataStockx = require("../data/dataStockxApi.json");
 const dir = "./data/";
-
-puppeteer.use(StealthPlugin());
 
 async function getData(keyword) {
   await got(
@@ -16,26 +12,30 @@ async function getData(keyword) {
     .then((data) => {
       fs.writeFile(`${dir}dataStockxApi.json`, data, (error) => {
         if (error) throw error;
-        console.log("Job done");
       });
     })
     .then(() => {
-      getDataInfo();
-      return (href = dataStockx.Products[0].urlKey);
+      const product = getDataInfo();
+      return product;
     })
-    .then((href) => {
-      getVariants(href);
+    .then((product) => {
+      const resVariants = getVariants(product.urlKey);
+
+      resVariants.then((variants) => {
+        product.variants = variants;
+        const jsonProduct = JSON.stringify(product);
+
+        const dir = "./data/";
+        fs.mkdir(dir, { recursive: true }, (err) => {
+          if (err) throw err;
+        });
+
+        fs.writeFile(`${dir}stockX.json`, jsonProduct, (error) => {
+          if (error) throw error;
+          console.log("Its written");
+        });
+      });
     });
-
-  // const dir = "../data/";
-  // fs.mkdir(dir, { recursive: true }, (err) => {
-  //   if (err) throw err;
-  // });
-
-  // fs.writeFile(`${dir}stockX.json`, json2, (error) => {
-  //   if (error) throw error;
-  //   console.log("Job done");
-  // });
 }
 
 async function getDataInfo() {
@@ -60,23 +60,27 @@ async function getDataInfo() {
 }
 
 async function getVariants(href) {
-  await got(`https://stockx.com/api/products/${href}?includes=market`, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15",
-    },
-    http2: true,
-  })
-    .then((response) => JSON.parse(response.body))
-    .then((data) => {
-      const products = data.Product.children;
-      for (const key in products) {
-        const variants = {};
-        variants.size = Number(products[key].shoeSize);
-        variants.price = products[key].market.lowestAsk;
-        return variants;
-      }
-    });
+  const response = await got(
+    `https://stockx.com/api/products/${href}?includes=market`,
+    {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15",
+      },
+      http2: true,
+    }
+  );
+  const data = JSON.parse(response.body);
+  const products = data.Product.children;
+  const keys = Object.keys(products);
+
+  const result = keys.map((key) => {
+    const variants = {};
+    variants.size = Number(products[key].shoeSize);
+    variants.price = products[key].market.lowestAsk;
+    return variants;
+  });
   console.log("get variants done");
+  return result;
 }
 getData("DA3595-100");

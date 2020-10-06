@@ -15,5 +15,5 @@ product.shortDescription = data.Products[0].shortDescription;
 product.styleId = data.Products[0].styleId;
 product.urlKey = data.Products[0].urlKey;
 product.url = `https://stockx.com/${product.urlKey}`;
-// console.log(product);
+
 module.exports = product;
