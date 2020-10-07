@@ -25,8 +25,8 @@ async function getInfo(keyword) {
     getVariants(href, pathname);
 
     browser.close();
+    console.log("FLIGHT CLUB done");
   });
-  console.log("FLIGHT CLUB done");
   return dataFlightClub;
 }
 
@@ -56,8 +56,7 @@ async function getVariants(href, pathname) {
     const json = data.map((item) => {
       const product = {};
       product.size = item.size.value;
-      product.price = item.instantShipPriceOption.price.value;
-
+      product.price = item.lowestPriceOption.price.value;
       return product;
     });
     const json2 = JSON.stringify(json);

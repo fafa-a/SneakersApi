@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-const sneaksCtl = require("./controlers/sneaksControler");
 
 const router = express.Router();
+const hostname = "http://localhost:";
 const port = process.env.PORT || 8080;
 
 const bodyParser = require("body-parser");
@@ -21,4 +21,4 @@ app.use("/", router);
 
 app.listen(port);
 
-console.log("Sneakers API REST server started on: " + port);
+console.log(`Sneakers API REST server started on: ${hostname + port}`);

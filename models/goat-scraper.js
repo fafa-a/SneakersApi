@@ -3,11 +3,11 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const got = require("got");
 const fs = require("fs");
 
-// const dataGoat = require("../data/goat.json");
+const dataGoat = require("../data/goat.json");
 puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
-  puppeteer.launch({ headless: false, slowmo: 10 }).then(async (browser) => {
+  puppeteer.launch({ headless: true, slowmo: 10 }).then(async (browser) => {
     const page = await browser.newPage();
     page.setUserAgent(
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
@@ -33,7 +33,7 @@ async function getInfo(keyword) {
     browser.close();
     console.log("GOAT done");
   });
-  // return dataGoat;
+  return dataGoat;
 }
 
 async function getVariants(newPathname) {
@@ -54,7 +54,6 @@ async function getVariants(newPathname) {
       return variants;
     });
     const json = JSON.stringify(result);
-    console.log(json);
 
     const dir = "../data/";
     fs.mkdir(dir, { recursive: true }, (err) => {
@@ -70,5 +69,4 @@ async function getVariants(newPathname) {
   }
 }
 
-getInfo("BV0073-002");
 module.exports = getInfo;

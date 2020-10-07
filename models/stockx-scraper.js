@@ -8,7 +8,7 @@ const dir = "../data/";
 async function getInfo(keyword) {
   try {
     await got(
-      `https://stockx.com/api/browse?productCategory=sneakers&currency=EUR&_search=%22${keyword}%22&dataType=product`
+      `https://stockx.com/api/browse?productCategory=sneakers&currency=EUR&_search="%22${keyword}%22"&dataType=product`
     )
       .then((response) => response.body)
       .then((data) => {
@@ -26,7 +26,7 @@ async function getInfo(keyword) {
       })
       .then((product) => {
         const resVariants = getVariants(product.urlKey);
-
+        console.log(product.urlKey);
         resVariants
           .then((variants) => {
             product.variants = variants;
@@ -94,4 +94,5 @@ async function getVariants(href) {
   console.log("get variants done");
   return result;
 }
+
 module.exports = getInfo;
