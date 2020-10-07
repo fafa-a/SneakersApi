@@ -3,24 +3,39 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fetch = require("isomorphic-fetch");
 const fs = require("fs");
 const key = require("../key.json");
+
+const dataKlekt = require("../data/klekt.json");
 puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
-  puppeteer.launch({ headless: true }).then(async (browser) => {
-    const page = await browser.newPage();
-    page.setUserAgent(
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
-    );
+  try {
+    console.log(keyword);
+    puppeteer.launch({ headless: true }).then(async (browser) => {
+      const page = await browser.newPage();
+      page.setUserAgent(
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
+      );
 
-    await page.goto(` https://www.klekt.com/store/pattern, ${keyword} /page,1`);
+      await page.goto(
+        ` https://www.klekt.com/store/pattern, ${keyword} /page,1`
+      );
 
-    const href = await page.evaluate(() => {
-      return document.querySelector("#k-listing__id_49865 > a").href;
+      const href = await page.evaluate(() => {
+        return document.querySelector(
+          ".k-listing__root.k-product__root.k-product__status-approved > a"
+        ).href;
+      });
+
+      browser.close();
+      // const variants = getVariants(href);
+      // variants.then((res) => {
+      //   console.log(res);
+      // });
     });
-    console.log(href);
-    getVariants(href);
-    browser.close();
-  });
+    return dataKlekt;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function getVariants(href) {
@@ -56,10 +71,11 @@ async function getVariants(href) {
 
     fs.writeFile(`${dir}klekt.json`, json2, (error) => {
       if (error) throw error;
-      console.log("Job done");
+      console.log("KLEKT done");
     });
+    return json2;
   } catch (error) {
     console.log(error);
   }
 }
-getInfo("DA3595 100");
+module.exports = getInfo;

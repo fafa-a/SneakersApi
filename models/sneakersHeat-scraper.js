@@ -3,6 +3,7 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fs = require("fs");
 puppeteer.use(StealthPlugin());
 
+const dataSneakersHeat = require("../data/sneakersHeat.json");
 async function getInfo(keyword) {
   puppeteer.launch({ headless: true }).then(async (browser) => {
     const page = await browser.newPage();
@@ -28,6 +29,8 @@ async function getInfo(keyword) {
     getVariants(meta);
     browser.close();
   });
+  console.log("SNEAKERS HEAT done");
+  return dataSneakersHeat;
 }
 
 async function getVariants(meta) {
@@ -45,7 +48,7 @@ async function getVariants(meta) {
   });
 
   const json2 = JSON.stringify(json);
-  
+
   const dir = "../data/";
   fs.mkdir(dir, { recursive: true }, (err) => {
     if (err) throw err;
@@ -56,4 +59,4 @@ async function getVariants(meta) {
     console.log("Job done");
   });
 }
-getInfo("CJ0609-300");
+module.exports = getInfo;

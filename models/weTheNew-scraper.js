@@ -3,6 +3,7 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fs = require("fs");
 puppeteer.use(StealthPlugin());
 
+const dataWeTheNew = require("../data/weTheNew.json");
 async function getInfo(keyword) {
   puppeteer.launch({ headless: true }).then(async (browser) => {
     const page = await browser.newPage();
@@ -30,7 +31,10 @@ async function getInfo(keyword) {
     getVariants(meta);
     browser.close();
   });
+  console.log("WE THE NEW done");
+  return dataWeTheNew;
 }
+
 async function getVariants(meta) {
   const json = meta.map((item) => {
     const product = {};
@@ -55,4 +59,4 @@ async function getVariants(meta) {
   });
 }
 
-getInfo("CJ0609-300");
+module.exports = getInfo;
