@@ -9,7 +9,6 @@ puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
   try {
-    console.log(keyword);
     puppeteer.launch({ headless: true }).then(async (browser) => {
       const page = await browser.newPage();
       page.setUserAgent(
@@ -27,10 +26,7 @@ async function getInfo(keyword) {
       });
 
       browser.close();
-      // const variants = getVariants(href);
-      // variants.then((res) => {
-      //   console.log(res);
-      // });
+      const variants = getVariants(href);
     });
     return dataKlekt;
   } catch (error) {
@@ -62,20 +58,31 @@ async function getVariants(href) {
       product.price = item.price;
       return product;
     });
-    const json2 = JSON.stringify(json);
+
+    const jsonSorted = json.sort(function (a, b) {
+      if (a.size < b.size) {
+        return -1;
+      }
+      if (a.size > b.size) {
+        return 1;
+      }
+      return 0;
+    });
+    const jsonString = JSON.stringify(jsonSorted);
 
     const dir = "../data/";
     fs.mkdir(dir, { recursive: true }, (err) => {
       if (err) throw err;
     });
 
-    fs.writeFile(`${dir}klekt.json`, json2, (error) => {
+    fs.writeFile(`${dir}klekt.json`, jsonString, (error) => {
       if (error) throw error;
       console.log("KLEKT done");
     });
-    return json2;
+    return jsonString;
   } catch (error) {
     console.log(error);
   }
 }
+getInfo("CK6631 307");
 module.exports = getInfo;
