@@ -84,5 +84,5 @@ async function getVariants(href) {
     console.log(error);
   }
 }
-getInfo("CK6631 307");
+
 module.exports = getInfo;
