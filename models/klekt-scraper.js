@@ -1,56 +1,36 @@
-const puppeteer = require("puppeteer-extra");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fetch = require("isomorphic-fetch");
-const fs = require("fs");
+const { mkdir, writeFile } = require("../utils/FS");
 const key = require("../key.json");
-
-const dataKlekt = require("../data/klekt.json");
-puppeteer.use(StealthPlugin());
+const dir = "../data/";
 
 async function getInfo(keyword) {
-  try {
-    puppeteer.launch({ headless: true }).then(async (browser) => {
-      const page = await browser.newPage();
-      page.setUserAgent(
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
-      );
-
-      await page.goto(
-        ` https://www.klekt.com/store/pattern, ${keyword} /page,1`
-      );
-
-      const href = await page.evaluate(() => {
-        return document.querySelector(
-          ".k-listing__root.k-product__root.k-product__status-approved > a"
-        ).href;
-      });
-
-      browser.close();
-      const variants = getVariants(href);
-    });
-    return dataKlekt;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getVariants(href) {
+  const url = "https://www.klekt.com/store/";
   try {
     const response = await fetch(
-      `https://4bgyha3fmu-dsn.algolia.net/1/indexes/dev_products2/46515?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.30.0&x-algolia-application-id=4BGYHA3FMU&x-algolia-api-key=${key.klekt.algolia}`,
+      `https://4bgyha3fmu-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.30.0%3Breact-instantsearch%204.5.2%3BJS%20Helper%202.26.1&x-algolia-application-id=4BGYHA3FMU&x-algolia-api-key=${key.klekt.algolia}`,
       {
         headers: {
           accept: "application/json",
+          "content-type": "application/x-www-form-urlencoded",
         },
-        referrer: href,
+        referrer: url,
         referrerPolicy: "unsafe-url",
-        body: null,
-        method: "GET",
+        body: `{"requests":[{"indexName":"dev_products2","params":"query=${keyword}&hitsPerPage=40&maxValuesPerFacet=50&page=0&highlightPreTag=%3Cais-highlight-0000000000%3E&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&filters=inventory.price%20%3E%200%20OR%20nddInventory.price%20%3E%200&facets=%5B%22brand%22%2C%22tags%22%2C%22availableSizes%22%2C%22inventory.price%22%5D&tagFilters="}]}`,
+        method: "POST",
         mode: "cors",
       }
     );
     const resJson = await response.json();
-    const data = resJson.inventory;
+
+    const info = resJson.results[0].hits[0];
+    const data = info.inventory;
+    const result = {};
+    const klekt = {};
+
+    klekt.brandName = info.brand;
+    klekt.name = info.title;
+    klekt.sku = info.styleCode;
+    klekt.href = url + info.uri;
 
     const json = data.map((item) => {
       const product = {};
@@ -68,21 +48,18 @@ async function getVariants(href) {
       }
       return 0;
     });
-    const jsonString = JSON.stringify(jsonSorted);
 
-    const dir = "../data/";
-    fs.mkdir(dir, { recursive: true }, (err) => {
-      if (err) throw err;
-    });
+    klekt.variants = jsonSorted;
+    result.klekt = klekt;
+    const dataWrite = JSON.stringify(result);
 
-    fs.writeFile(`${dir}klekt.json`, jsonString, (error) => {
-      if (error) throw error;
-      console.log("KLEKT done");
-    });
-    return jsonString;
+    mkdir(dir);
+    writeFile(dir, "klekt.json", dataWrite);
+
+    return result;
   } catch (error) {
     console.log(error);
   }
 }
-
+getInfo("DC9533-001");
 module.exports = getInfo;

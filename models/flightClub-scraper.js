@@ -49,7 +49,6 @@ async function getInfo(keyword) {
 }
 
 async function getVariants(href, pathname, product) {
-  console.log(product);
   try {
     const response = await fetch("https://www.flightclub.com/graphql", {
       headers: {
@@ -82,7 +81,6 @@ async function getVariants(href, pathname, product) {
 
     const dataJson = {};
     dataJson.flightClub = product;
-    console.log(dataJson);
     const dataWrite = JSON.stringify(dataJson);
 
     const dir = "../data/";
@@ -99,5 +97,5 @@ async function getVariants(href, pathname, product) {
     console.log(error);
   }
 }
-getInfo("CV1639-001");
+
 module.exports = getInfo;
