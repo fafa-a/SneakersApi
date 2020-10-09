@@ -18,11 +18,29 @@ async function getInfo(keyword) {
 
     await page.waitForNavigation({ waitUntil: "networkidle0" });
 
-    const href = await page.evaluate(() => {
-      return document.querySelector(".sc-12ddmbl-0 > a").href;
+    const product = await page.evaluate(() => {
+      const docu = {};
+      docu.name = document.querySelector("h2").innerText;
+      docu.href = document.querySelector(".sc-12ddmbl-0 > a").href;
+      return docu;
     });
-    const pathname = href.slice(27);
-    getVariants(href, pathname);
+
+    await page.click(
+      "#__next > div.sc-13z5yif-0.ifdEBU > div > div.sc-1cloqkg-0.dgTZn > div.sc-1wyapo6-1.bNeTMk > div.sc-12ddmbl-0.kEGgBM > a"
+    );
+
+    const href = product.href;
+    const pathname = product.href.slice(27);
+
+    await page.waitForNavigation({ waitUntil: "networkidle0" });
+
+    const sku = await page.evaluate(() => {
+      return document.querySelector("h3.sc-163h2ry-3.jhutSW").innerText;
+    });
+    const regEx = new RegExp("([^|]+)");
+    product.sku = regEx.exec(sku)[0].trim();
+
+    getVariants(href, pathname, product);
 
     browser.close();
     console.log("FLIGHT CLUB done");
@@ -30,7 +48,8 @@ async function getInfo(keyword) {
   return dataFlightClub;
 }
 
-async function getVariants(href, pathname) {
+async function getVariants(href, pathname, product) {
+  console.log(product);
   try {
     const response = await fetch("https://www.flightclub.com/graphql", {
       headers: {
@@ -59,21 +78,26 @@ async function getVariants(href, pathname) {
       product.price = item.lowestPriceOption.price.value;
       return product;
     });
-    const json2 = JSON.stringify(json);
+    product.variants = json;
+
+    const dataJson = {};
+    dataJson.flightClub = product;
+    console.log(dataJson);
+    const dataWrite = JSON.stringify(dataJson);
 
     const dir = "../data/";
     fs.mkdir(dir, { recursive: true }, (err) => {
       if (err) throw err;
     });
 
-    fs.writeFile(`${dir}flightClub.json`, json2, (error) => {
+    fs.writeFile(`${dir}flightClub.json`, dataWrite, (error) => {
       if (error) throw error;
       console.log("Job done");
     });
-    return json2;
+    return dataWrite;
   } catch (error) {
     console.log(error);
   }
 }
-
+getInfo("CV1639-001");
 module.exports = getInfo;
