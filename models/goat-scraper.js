@@ -39,21 +39,21 @@ async function getInfo(keyword) {
     const newPathname = href.slice(30);
     console.log(href);
 
-    // await page.waitForNavigation({ waitUntil: "networkidle0" });
+    await page.waitForNavigation({ waitUntil: "networkidle0" });
 
-    // const pageSku = await browser.newPage();
-    // pageSku.setUserAgent(
-    //   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
-    // );
-    // await pageSku.goto(href);
+    const pageSku = await browser.newPage();
+    pageSku.setUserAgent(
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
+    );
+    await pageSku.goto(href);
 
-    // const sku = await pageSku.evaluate(() => {
-    //   return document.querySelector(".ProductTitlePane__SKU-sc-17vgpmb-5")
-    //     .innerText;
-    // });
+    const sku = await pageSku.evaluate(() => {
+      return document.querySelector(".ProductTitlePane__SKU-sc-17vgpmb-5")
+        .innerText;
+    });
 
-    // const regEx = new RegExp("(?<=:).*");
-    // product.sku = regEx.exec(sku)[0].trim();
+    const regEx = new RegExp("(?<=:).*");
+    product.sku = regEx.exec(sku)[0].trim();
 
     console.log(product);
     getVariants(newPathname);
