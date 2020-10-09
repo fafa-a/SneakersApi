@@ -65,5 +65,5 @@ async function getVariants(meta, weTheNew) {
 
   writeFile(dir, "weTheNew.json", json2);
 }
-getInfo("DC9533-001");
+
 module.exports = getInfo;
