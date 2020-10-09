@@ -58,5 +58,5 @@ async function getVariants(meta) {
     console.log("Job done");
   });
 }
-
+getInfo("DC9533-001");
 module.exports = getInfo;

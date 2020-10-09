@@ -93,5 +93,5 @@ async function getInfo(keyword) {
     console.log(error);
   }
 }
-getInfo("AJ4219-400");
+
 module.exports = getInfo;

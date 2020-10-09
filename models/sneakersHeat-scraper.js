@@ -1,6 +1,8 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const fs = require("fs");
+const { mkdir, writeFile } = require("../utils/FS");
+const dir = "../data/";
+
 puppeteer.use(StealthPlugin());
 
 const dataSneakersHeat = require("../data/sneakersHeat.json");
@@ -26,17 +28,51 @@ async function getInfo(keyword) {
       return meta.product.variants;
     });
 
-    getVariants(meta);
+    getVariants(meta, href);
     browser.close();
   });
   console.log("SNEAKERS HEAT done");
   return dataSneakersHeat;
 }
 
-async function getVariants(meta) {
+async function getVariants(meta, href) {
+  const styleCode = meta[0].sku;
+  const title = meta[0].name;
+  const RegExsku = new RegExp(".*(?=-)");
+  const RegExName = new RegExp(".+?(?=-)");
+  const skuRegEx = RegExsku.exec(styleCode);
+  const nameRegEx = RegExName.exec(title);
+  const sku = skuRegEx[0];
+  const name = nameRegEx[0];
+  const brandName = name.toLowerCase();
+
+  const result = {};
+  const sneakersHeat = {};
+
+  const searchName = function () {
+    if (brandName.includes("air jordan")) {
+      sneakersHeat.brand = "Air Jordan";
+    } else if (brandName.includes("nike")) {
+      sneakersHeat.brand = "Nike";
+    } else if (brandName.includes("adidas")) {
+      sneakersHeat.brand = "Adidas";
+    } else if (brandName.includes("yeezy")) {
+      sneakersHeat.brand = "Yeezy";
+    } else if (brandName.includes("reebok")) {
+      sneakersHeat.brand = "Reebok";
+    } else if (brandName.includes("converse")) {
+      sneakersHeat.brand = "Converse";
+    }
+    return sneakersHeat.brand;
+  };
+
+  sneakersHeat.brand = searchName();
+  sneakersHeat.name = name;
+  sneakersHeat.sku = sku;
+  sneakersHeat.href = href;
+
   const json = meta.map((item) => {
     const product = {};
-
     const regex = new RegExp(/^[^-]*[^ -]/g);
     const size = item.public_title;
     const sizeRegExp = regex.exec(size);
@@ -46,17 +82,15 @@ async function getVariants(meta) {
 
     return product;
   });
+  sneakersHeat.variants = json;
+  result.sneakersHeat = sneakersHeat;
 
-  const json2 = JSON.stringify(json);
+  const json2 = JSON.stringify(result);
 
-  const dir = "../data/";
-  fs.mkdir(dir, { recursive: true }, (err) => {
-    if (err) throw err;
-  });
+  mkdir(dir);
+  writeFile(dir, "sneakersHeat.json", json2);
 
-  fs.writeFile(`${dir}/sneakersHeat.json`, json2, (error) => {
-    if (error) throw error;
-    console.log("Job done");
-  });
+  console.log("Job done");
 }
+
 module.exports = getInfo;

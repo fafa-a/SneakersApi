@@ -61,5 +61,5 @@ async function getInfo(keyword) {
     console.log(error);
   }
 }
-getInfo("DC9533-001");
+
 module.exports = getInfo;
