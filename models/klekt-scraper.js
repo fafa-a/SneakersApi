@@ -56,10 +56,9 @@ async function getInfo(keyword) {
     mkdir(dir);
     writeFile(dir, "klekt.json", dataWrite);
 
-    return result;
+    return dataWrite;
   } catch (error) {
     console.log(error);
   }
 }
-
 module.exports = getInfo;

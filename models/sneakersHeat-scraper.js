@@ -5,7 +5,6 @@ const dir = "../data/";
 
 puppeteer.use(StealthPlugin());
 
-const dataSneakersHeat = require("../data/sneakersHeat.json");
 async function getInfo(keyword) {
   puppeteer.launch({ headless: true }).then(async (browser) => {
     const page = await browser.newPage();
@@ -28,11 +27,11 @@ async function getInfo(keyword) {
       return meta.product.variants;
     });
 
-    getVariants(meta, href);
+    const dataSneakersHeat = await getVariants(meta, href);
     browser.close();
+    console.log("SNEAKERS HEAT done");
+    return dataSneakersHeat;
   });
-  console.log("SNEAKERS HEAT done");
-  return dataSneakersHeat;
 }
 
 async function getVariants(meta, href) {
@@ -89,8 +88,7 @@ async function getVariants(meta, href) {
 
   mkdir(dir);
   writeFile(dir, "sneakersHeat.json", json2);
-
   console.log("Job done");
+  return json2;
 }
-
 module.exports = getInfo;

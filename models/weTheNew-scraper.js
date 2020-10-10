@@ -4,7 +4,6 @@ const { mkdir, writeFile } = require("../utils/FS");
 
 puppeteer.use(StealthPlugin());
 const dir = "../data/";
-const dataWeTheNew = require("../data/weTheNew.json");
 
 async function getInfo(keyword) {
   puppeteer.launch({ headless: true }).then(async (browser) => {
@@ -38,8 +37,10 @@ async function getInfo(keyword) {
       return meta.product.variants;
     });
 
-    getVariants(meta, weTheNew);
+    const dataWeTheNew = await getVariants(meta, weTheNew);
     browser.close();
+    console.log(" WE THE NEW done");
+    return dataWeTheNew;
   });
 }
 
@@ -64,6 +65,7 @@ async function getVariants(meta, weTheNew) {
   mkdir(dir);
 
   writeFile(dir, "weTheNew.json", json2);
+  return json2;
 }
 
 module.exports = getInfo;

@@ -6,14 +6,25 @@ const stockx = require("../models/stockx-scraper");
 const weTheNew = require("../models/weTheNew-scraper");
 
 async function getAllInfo(keyword) {
-  const response = [
-    await stockx(keyword),
-    await klekt(keyword),
-    await goat(keyword),
-    await flightClub(keyword),
-    await sneakersHeat(keyword),
-    await weTheNew(keyword),
-  ];
+  const p1 = await stockx(keyword);
+  const p2 = await klekt(keyword);
+  const p3 = await goat(keyword);
+  const p4 = await flightClub(keyword);
+  const p5 = await sneakersHeat(keyword);
+  const p6 = await weTheNew(keyword);
+  const response = Promise.all(
+    Promise.resolve(p1),
+    Promise.resolve(p2),
+    Promise.resolve(p3),
+    Promise.resolve(p4),
+    Promise.resolve(p5),
+    Promise.resolve(p6)
+  
+    .then((value) => console.log(value))
+    .catch((error) => {
+      console.error(error.message);
+    });
   return response;
 }
+
 module.exports = getAllInfo;

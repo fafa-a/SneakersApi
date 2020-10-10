@@ -3,7 +3,6 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fetch = require("isomorphic-fetch");
 const fs = require("fs");
 
-const dataFlightClub = require("../data/flightClub.json");
 puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
@@ -40,12 +39,11 @@ async function getInfo(keyword) {
     const regEx = new RegExp("([^|]+)");
     product.sku = regEx.exec(sku)[0].trim();
 
-    getVariants(href, pathname, product);
-
+    const dataFlightClub = await getVariants(href, pathname, product);
     browser.close();
     console.log("FLIGHT CLUB done");
+    return dataFlightClub;
   });
-  return dataFlightClub;
 }
 
 async function getVariants(href, pathname, product) {
@@ -97,5 +95,4 @@ async function getVariants(href, pathname, product) {
     console.log(error);
   }
 }
-
 module.exports = getInfo;
