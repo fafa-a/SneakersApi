@@ -6,44 +6,49 @@ const fs = require("fs");
 puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
-  puppeteer.launch({ headless: true }).then(async (browser) => {
-    const page = await browser.newPage();
-    page.setUserAgent(
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
-    );
-    await page.goto(
-      `https://www.flightclub.com/catalogsearch/result?query=${keyword}`
-    );
+  try {
+    puppeteer.launch({ headless: true }).then(async (browser) => {
+      const page = await browser.newPage();
+      page.setUserAgent(
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
+      );
+      await page.goto(
+        `https://www.flightclub.com/catalogsearch/result?query=${keyword}`
+      );
 
-    await page.waitForNavigation({ waitUntil: "networkidle0" });
+      await page.waitForNavigation({ waitUntil: "networkidle0" });
 
-    const product = await page.evaluate(() => {
-      const docu = {};
-      docu.name = document.querySelector("h2").innerText;
-      docu.href = document.querySelector(".sc-12ddmbl-0 > a").href;
-      return docu;
+      const product = await page.evaluate(() => {
+        const docu = {};
+        docu.name = document.querySelector("h2").innerText;
+        docu.href = document.querySelector(".sc-12ddmbl-0 > a").href;
+        return docu;
+      });
+
+      await page.click(
+        "#__next > div.sc-13z5yif-0.ifdEBU > div > div.sc-1cloqkg-0.dgTZn > div.sc-1wyapo6-1.bNeTMk > div.sc-12ddmbl-0.kEGgBM > a"
+      );
+
+      const href = product.href;
+      const pathname = product.href.slice(27);
+
+      await page.waitForNavigation({ waitUntil: "networkidle0" });
+
+      const sku = await page.evaluate(() => {
+        return document.querySelector("h3.sc-163h2ry-3.jhutSW").innerText;
+      });
+      const regEx = new RegExp("([^|]+)");
+      product.sku = regEx.exec(sku)[0].trim();
+
+      const dataFlightClub = await getVariants(href, pathname, product);
+      browser.close();
+      console.log("FLIGHT CLUB done");
+
+      return dataFlightClub;
     });
-
-    await page.click(
-      "#__next > div.sc-13z5yif-0.ifdEBU > div > div.sc-1cloqkg-0.dgTZn > div.sc-1wyapo6-1.bNeTMk > div.sc-12ddmbl-0.kEGgBM > a"
-    );
-
-    const href = product.href;
-    const pathname = product.href.slice(27);
-
-    await page.waitForNavigation({ waitUntil: "networkidle0" });
-
-    const sku = await page.evaluate(() => {
-      return document.querySelector("h3.sc-163h2ry-3.jhutSW").innerText;
-    });
-    const regEx = new RegExp("([^|]+)");
-    product.sku = regEx.exec(sku)[0].trim();
-
-    const dataFlightClub = await getVariants(href, pathname, product);
-    browser.close();
-    console.log("FLIGHT CLUB done");
-    return dataFlightClub;
-  });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function getVariants(href, pathname, product) {
@@ -90,9 +95,11 @@ async function getVariants(href, pathname, product) {
       if (error) throw error;
       console.log("Job done");
     });
-    return dataWrite;
+
+    return dataJson;
   } catch (error) {
     console.log(error);
   }
 }
+
 module.exports = getInfo;

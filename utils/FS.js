@@ -7,8 +7,9 @@ const mkdir = function (dir) {
 };
 
 const writeFile = function (dir, files, data) {
-  fs.writeFile(`${dir + files}`, data, (error) => {
+  fs.writeFile(`${dir} ${files}`, data, (error) => {
     if (error) throw error;
+    console.log(`${files} written !`);
   });
 };
 

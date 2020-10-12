@@ -1,13 +1,13 @@
 {
   "name": "sneakersapi",
   "version": "1.0.0",
-  "description": "Api Rest on sneakers website",
+  "description": "Api on sneakers website",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sart": "node server.js"
+    "start": "node app.js"
   },
-  "author": "",
+  "author": "anonymous",
   "license": "ISC",
   "dependencies": {
     "-": "0.0.1",
@@ -16,15 +16,19 @@
     "express": "^4.17.1",
     "fetch": "^1.1.0",
     "got": "^11.7.0",
+    "http2": "^3.3.7",
     "isomorphic-fetch": "^3.0.0",
     "jsdom": "^16.4.0",
+    "nodemon": "^2.0.4",
     "puppeteer": "^5.3.1",
     "puppeteer-extra": "^3.1.15",
     "puppeteer-extra-plugin-anonymize-ua": "^2.2.14",
     "puppeteer-extra-plugin-recaptcha": "^3.1.18",
     "puppeteer-extra-plugin-recaptcha_v2": "^1.0.6",
     "puppeteer-extra-plugin-stealth": "^2.6.1",
+    "regenerator-runtime": "^0.13.7",
     "request": "^2.88.2",
     "save": "^2.4.0"
-  }
+  },
+  "devDependencies": {}
 }

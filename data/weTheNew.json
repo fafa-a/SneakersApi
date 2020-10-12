@@ -1,1 +1,23 @@
-{"weTheNew":{"brandName":"Nike","name":"Air Max 1 London City Pack","href":"https://wethenew.com/products/nike-air-max-1-london-city-pack?variant=32113261871213","sku":"CV1639-001","variants":[{"size":6,"price":25500},{"size":6.5,"price":36000},{"size":7,"price":28500},{"size":7.5,"price":34000},{"size":8,"price":29000},{"size":8.5,"price":35000},{"size":9,"price":34000},{"size":9.5,"price":39000},{"size":10,"price":34000},{"size":10.5,"price":37000},{"size":11,"price":45000},{"size":11.5,"price":42000},{"size":12,"price":63000}]}}
+{
+  "weTheNew": {
+    "brandName": "Nike",
+    "name": "Air Max 1 London City Pack",
+    "href": "https://wethenew.com/products/nike-air-max-1-london-city-pack?variant=32113261871213",
+    "sku": "CV1639-001",
+    "variants": [
+      { "size": 6, "price": 25500 },
+      { "size": 6.5, "price": 36000 },
+      { "size": 7, "price": 28500 },
+      { "size": 7.5, "price": 34000 },
+      { "size": 8, "price": 29000 },
+      { "size": 8.5, "price": 35000 },
+      { "size": 9, "price": 34000 },
+      { "size": 9.5, "price": 39000 },
+      { "size": 10, "price": 34000 },
+      { "size": 10.5, "price": 37000 },
+      { "size": 11, "price": 45000 },
+      { "size": 11.5, "price": 42000 },
+      { "size": 12, "price": 63000 }
+    ]
+  }
+}

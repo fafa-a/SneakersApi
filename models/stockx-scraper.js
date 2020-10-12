@@ -3,30 +3,27 @@ const got = require("got");
 const { mkdir, writeFile } = require("../utils/FS");
 const dir = "../data/";
 
-async function getInfo(keyword) {
+const getInfo = async function (keyword) {
   try {
     const response = await got(
       `https://stockx.com/api/browse?productCategory=sneakers&currency=EUR&_search=${keyword}&dataType=product`
     );
     const data = response.body;
 
-    mkdir(dir);
-    writeFile(dir, "dataStockX.json", data);
-
     const product = await getDataInfo(data);
     const variants = await getVariants(product.stockx.urlKey);
     product.stockx.variants = variants;
     const dataStockx = JSON.stringify(product);
-
+    mkdir(dir);
     writeFile(dir, "stockX.json", dataStockx);
 
     console.log("STOCKX done");
 
-    return dataStockx;
+    return product;
   } catch (error) {
     console.log(error);
   }
-}
+};
 async function getDataInfo(data) {
   const result = {};
   const stockx = {};
@@ -44,7 +41,7 @@ async function getDataInfo(data) {
     (stockx.retailPrice = dataParsed.Products[0].retailPrice),
     (stockx.shoe = dataParsed.Products[0].shoe),
     (stockx.shortDescription = dataParsed.Products[0].shortDescription),
-    (stockx.styleId = dataParsed.Products[0].styleId),
+    (stockx.sku = dataParsed.Products[0].styleId),
     (stockx.urlKey = dataParsed.Products[0].urlKey),
     (stockx.url = `https://stockx.com/${stockx.urlKey}`),
     (stockx.media = media),
@@ -52,7 +49,7 @@ async function getDataInfo(data) {
 
   return result;
 }
-getInfo("AJ4219-400");
+
 async function getVariants(href) {
   const response = await got(
     `https://stockx.com/api/products/${href}?includes=market`,

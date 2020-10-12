@@ -6,32 +6,36 @@ const dir = "../data/";
 puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
-  puppeteer.launch({ headless: true }).then(async (browser) => {
-    const page = await browser.newPage();
-    page.setUserAgent(
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
-    );
-    await page.goto(
-      `https://sneakers-heat.com/search?q=${keyword}*&type=product`
-    );
+  try {
+    puppeteer.launch({ headless: true }).then(async (browser) => {
+      const page = await browser.newPage();
+      page.setUserAgent(
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
+      );
+      await page.goto(
+        `https://sneakers-heat.com/search?q=${keyword}*&type=product`
+      );
 
-    const href = await page.evaluate(() => {
-      return document.querySelector(
-        ".ProductItem__ImageWrapper.ProductItem__ImageWrapper--withAlternateImage"
-      ).href;
+      const href = await page.evaluate(() => {
+        return document.querySelector(
+          ".ProductItem__ImageWrapper.ProductItem__ImageWrapper--withAlternateImage"
+        ).href;
+      });
+
+      await page.goto(href);
+
+      const meta = await page.evaluate(() => {
+        return meta.product.variants;
+      });
+
+      const dataSneakersHeat = await getVariants(meta, href);
+      browser.close();
+      console.log("SNEAKERS HEAT done");
+      return dataSneakersHeat;
     });
-
-    await page.goto(href);
-
-    const meta = await page.evaluate(() => {
-      return meta.product.variants;
-    });
-
-    const dataSneakersHeat = await getVariants(meta, href);
-    browser.close();
-    console.log("SNEAKERS HEAT done");
-    return dataSneakersHeat;
-  });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function getVariants(meta, href) {
@@ -89,6 +93,6 @@ async function getVariants(meta, href) {
   mkdir(dir);
   writeFile(dir, "sneakersHeat.json", json2);
   console.log("Job done");
-  return json2;
+  return result;
 }
 module.exports = getInfo;

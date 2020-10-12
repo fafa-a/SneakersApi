@@ -1,0 +1,16 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+input {
+  width: 70vw;
+  margin: auto;
+}
+.result {
+  width: 70vw;
+  height: 200px;
+  background-color: lightgrey;
+}

@@ -1,1 +1,35 @@
-{"goat":{"brandName":"Nike","name":"Air Max 1 City Pack 'London'","sku":"CV1639-001","href":"https://www.goat.com/sneakers/air-max-1-city-pack-london-cv1639-001","variants":[{"size":4,"price":35000},{"size":4.5,"price":30000},{"size":5,"price":33000},{"size":5,"price":28500},{"size":6,"price":23000},{"size":6,"price":24500},{"size":6.5,"price":24500},{"size":7,"price":37500},{"size":7.5,"price":40000},{"size":7.5,"price":42000},{"size":8,"price":31800},{"size":8.5,"price":36500},{"size":9,"price":34000},{"size":9,"price":37500},{"size":9.5,"price":34000},{"size":10,"price":39900},{"size":10.5,"price":50700},{"size":10.5,"price":40500},{"size":11,"price":43800},{"size":11.5,"price":39000},{"size":12,"price":56500},{"size":12,"price":52000},{"size":12.5,"price":52400},{"size":13,"price":80000},{"size":15,"price":100000}]}}
+{
+  "goat": {
+    "brandName": "Nike",
+    "name": "Air Max 1 City Pack 'London'",
+    "sku": "CV1639-001",
+    "href": "https://www.goat.com/sneakers/air-max-1-city-pack-london-cv1639-001",
+    "variants": [
+      { "size": 4, "price": 35000 },
+      { "size": 4.5, "price": 30000 },
+      { "size": 5, "price": 33000 },
+      { "size": 5, "price": 28500 },
+      { "size": 6, "price": 23000 },
+      { "size": 6, "price": 24500 },
+      { "size": 6.5, "price": 24500 },
+      { "size": 7, "price": 37500 },
+      { "size": 7.5, "price": 40000 },
+      { "size": 7.5, "price": 42000 },
+      { "size": 8, "price": 31800 },
+      { "size": 8.5, "price": 36500 },
+      { "size": 9, "price": 34000 },
+      { "size": 9, "price": 37500 },
+      { "size": 9.5, "price": 34000 },
+      { "size": 10, "price": 39900 },
+      { "size": 10.5, "price": 50700 },
+      { "size": 10.5, "price": 40500 },
+      { "size": 11, "price": 43800 },
+      { "size": 11.5, "price": 39000 },
+      { "size": 12, "price": 56500 },
+      { "size": 12, "price": 52000 },
+      { "size": 12.5, "price": 52400 },
+      { "size": 13, "price": 80000 },
+      { "size": 15, "price": 100000 }
+    ]
+  }
+}

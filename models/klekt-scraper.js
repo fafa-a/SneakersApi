@@ -1,5 +1,5 @@
 const fetch = require("isomorphic-fetch");
-const { mkdir, writeFile } = require("../utils/FS");
+// const { mkdir, writeFile } = require("../utils/FS");
 const key = require("../key.json");
 const dir = "../data/";
 
@@ -53,10 +53,10 @@ async function getInfo(keyword) {
     result.klekt = klekt;
     const dataWrite = JSON.stringify(result);
 
-    mkdir(dir);
-    writeFile(dir, "klekt.json", dataWrite);
+    // mkdir(dir);
+    // writeFile(dir, "klekt.json", dataWrite);
 
-    return dataWrite;
+    return result;
   } catch (error) {
     console.log(error);
   }
