@@ -1615,36 +1615,43 @@ var p = document.getElementById("result");
 
 var search = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-    var value, res, _res$klekt, brandName, name, sku, variants, _iterator, _step, item, size, price, result;
+    var value, res, _res$klekt, brandName, name, sku, variants, _iterator, _step, item, size, price, trSize, trPrice, tdS, tdP, sizeText, priceText;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
+            _context.prev = 0;
+
             if (!(e.keyCode == 13)) {
               _context.next = 10;
               break;
             }
 
             value = input.value;
-            console.log(value);
             _context.next = 5;
             return (0, _klektScraper.default)(value);
 
           case 5:
             res = _context.sent;
             _res$klekt = res.klekt, brandName = _res$klekt.brandName, name = _res$klekt.name, sku = _res$klekt.sku, variants = _res$klekt.variants;
-            p.innerText = brandName + " " + name + " " + sku; // variants.map((item) => {
-
+            p.innerText = brandName + " " + name + " " + sku;
             _iterator = _createForOfIteratorHelper(variants);
 
             try {
               for (_iterator.s(); !(_step = _iterator.n()).done;) {
                 item = _step.value;
                 size = item.size, price = item.price;
-                result = "<tr>\n        <td>".concat(size, "</td>\n      </tr>\n      <tr>\n        <td>").concat(price, "</td>\n      </tr>\n      ");
-                console.log(result);
-                document.getElementById("variants").innerHTML = result;
+                trSize = document.getElementById("size");
+                trPrice = document.getElementById("price");
+                tdS = document.createElement("td");
+                tdP = document.createElement("td");
+                sizeText = size;
+                priceText = "".concat(price, " $");
+                tdS.innerText = sizeText;
+                trSize.appendChild(tdS);
+                tdP.innerText = priceText;
+                trPrice.appendChild(tdP);
               }
             } catch (err) {
               _iterator.e(err);
@@ -1653,11 +1660,20 @@ var search = /*#__PURE__*/function () {
             }
 
           case 10:
+            _context.next = 15;
+            break;
+
+          case 12:
+            _context.prev = 12;
+            _context.t0 = _context["catch"](0);
+            console.log(_context.t0);
+
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee);
+    }, _callee, null, [[0, 12]]);
   }));
 
   return function search(_x) {
@@ -1666,7 +1682,7 @@ var search = /*#__PURE__*/function () {
 }();
 
 document.addEventListener("keypress", search);
-},{"regenerator-runtime/runtime":"../node_modules/regenerator-runtime/runtime.js","../models/klekt-scraper.js":"../models/klekt-scraper.js"}],"../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"regenerator-runtime/runtime":"../node_modules/regenerator-runtime/runtime.js","../models/klekt-scraper.js":"../models/klekt-scraper.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -1694,7 +1710,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51254" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53399" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -1870,5 +1886,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","script.js"], null)
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","script.js"], null)
 //# sourceMappingURL=/script.75da7f30.js.map
