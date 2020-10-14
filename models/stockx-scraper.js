@@ -1,24 +1,29 @@
-const got = require("got");
-
-const { mkdir, writeFile } = require("../utils/FS");
-const dir = "../data/";
+// const got = require("got");
+const axios = require("axios");
+// const { mkdir, writeFile } = require("../utils/FS");
+// const dir = "../data/";
 
 const getInfo = async function (keyword) {
   try {
-    const response = await got(
-      `https://stockx.com/api/browse?productCategory=sneakers&currency=EUR&_search=${keyword}&dataType=product`
+    const response = await axios.get(
+      `https://stockx.com/api/browse?productCategory=sneakers&currency=EUR&_search=${keyword}&dataType=product`,
+      {
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          "Access-Control-Allow-Origin": "*",
+          "User-Agent":
+            "Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36",
+        },
+      }
     );
-    const data = response.body;
 
+    const { data } = response;
     const product = await getDataInfo(data);
     const variants = await getVariants(product.stockx.urlKey);
     product.stockx.variants = variants;
     const dataStockx = JSON.stringify(product);
-    mkdir(dir);
-    writeFile(dir, "stockX.json", dataStockx);
-
-    console.log("STOCKX done");
-
+    // mkdir(dir);
+    // writeFile(dir, "stockX.json", dataStockx);
     return product;
   } catch (error) {
     console.log(error);
@@ -28,21 +33,20 @@ async function getDataInfo(data) {
   const result = {};
   const stockx = {};
   const media = {};
-  const dataParsed = JSON.parse(data);
 
-  (media.img = dataParsed.Products[0].media.smallImageUrl),
-    (media.thumbnail = dataParsed.Products[0].media.thumbUrl),
-    (stockx.brand = dataParsed.Products[0].brand),
-    (stockx.category = dataParsed.Products[0].category),
-    (stockx.colorway = dataParsed.Products[0].colorway),
-    (stockx.gender = dataParsed.Products[0].gender),
-    (stockx.name = dataParsed.Products[0].name),
-    (stockx.releaseDate = dataParsed.Products[0].releaseDate.slice(0, 10)),
-    (stockx.retailPrice = dataParsed.Products[0].retailPrice),
-    (stockx.shoe = dataParsed.Products[0].shoe),
-    (stockx.shortDescription = dataParsed.Products[0].shortDescription),
-    (stockx.sku = dataParsed.Products[0].styleId),
-    (stockx.urlKey = dataParsed.Products[0].urlKey),
+  (media.img = data.Products[0].media.smallImageUrl),
+    (media.thumbnail = data.Products[0].media.thumbUrl),
+    (stockx.brandName = data.Products[0].brand),
+    (stockx.category = data.Products[0].category),
+    (stockx.colorway = data.Products[0].colorway),
+    (stockx.gender = data.Products[0].gender),
+    (stockx.name = data.Products[0].name),
+    (stockx.releaseDate = data.Products[0].releaseDate.slice(0, 10)),
+    (stockx.retailPrice = data.Products[0].retailPrice),
+    (stockx.shoe = data.Products[0].shoe),
+    (stockx.shortDescription = data.Products[0].shortDescription),
+    (stockx.sku = data.Products[0].styleId),
+    (stockx.urlKey = data.Products[0].urlKey),
     (stockx.url = `https://stockx.com/${stockx.urlKey}`),
     (stockx.media = media),
     (result.stockx = stockx);
@@ -51,7 +55,7 @@ async function getDataInfo(data) {
 }
 
 async function getVariants(href) {
-  const response = await got(
+  const response = await axios.get(
     `https://stockx.com/api/products/${href}?includes=market`,
     {
       headers: {
@@ -61,7 +65,8 @@ async function getVariants(href) {
       http2: true,
     }
   );
-  const data = JSON.parse(response.body);
+  const { data } = response;
+
   const products = data.Product.children;
   const keys = Object.keys(products);
 
