@@ -12,34 +12,22 @@ async function getInfo(keyword) {
       page.setUserAgent(
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
       );
-      await page.setExtraHTTPHeaders({
-        accept: "*/*",
-        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "content-type": "application/json",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-      });
+
       await page.goto(`https://wethenew.com/search?type=product&q=${keyword}*`);
 
-      const weTheNew = await page.evaluate(() => {
-        const product = {};
-        product.brandName = document.querySelector(".brand").innerText;
-        product.name = document.querySelector(".title").innerText;
-        product.href = document.querySelector(".product-info__caption").href;
-        return product;
+      const href = await page.evaluate(() => {
+        return document.querySelector(".product-info__caption").href;
       });
 
-      await page.click(".thumbnail-overlay");
-
-      await page.waitForSelector(".ButtonGroup__ButtonGroupStyle-sc-1usw1pe-1");
+      await page.goto(href);
 
       const meta = await page.evaluate(() => {
-        return meta.product.variants;
+        return meta.product;
       });
 
-      const dataWeTheNew = await getVariants(meta, weTheNew);
+      const dataWeTheNew = await getVariants(meta, href);
       browser.close();
+
       return dataWeTheNew;
     });
   } catch (error) {
@@ -47,11 +35,9 @@ async function getInfo(keyword) {
   }
 }
 
-async function getVariants(meta, weTheNew) {
-  const sku = meta[0].sku;
-  weTheNew.sku = sku;
-
-  const json = meta.map((item) => {
+async function getVariants(meta, href) {
+  const data = meta.variants;
+  const json = data.map((item) => {
     const product = {};
     const size = new RegExp("(?<=-).*?(?=-)");
     const sizeRegExp = size.exec(item.public_title);
@@ -59,15 +45,25 @@ async function getVariants(meta, weTheNew) {
     product.price = item.price;
     return product;
   });
+  const regex = new RegExp(/^[^-]*[^ -]/g);
+  const item = data[0].name;
+  const name = regex.exec(item);
+
+  const weTheNew = {};
+  weTheNew.brandName = meta.vendor;
+  weTheNew.name = name[0];
+  weTheNew.sku = data[0].sku;
+  weTheNew.href = href;
 
   weTheNew.variants = json;
   const result = {};
   result.weTheNew = weTheNew;
-  const json2 = JSON.stringify(result);
+  // const json2 = JSON.stringify(result);
 
   // mkdir(dir);
 
   // writeFile(dir, "weTheNew.json", json2);
   return result;
 }
+getInfo("DB4612-300");
 module.exports = getInfo;

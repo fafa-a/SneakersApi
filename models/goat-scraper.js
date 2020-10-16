@@ -72,6 +72,8 @@ async function getVariants(newPathname, product) {
     // mkdir(dir);
     // writeFile(dir, "goat.json", json);
     // console.log("Goat data written");
+
+
     return result;
   } catch (error) {
     console.error(error);

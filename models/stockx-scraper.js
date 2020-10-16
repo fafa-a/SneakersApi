@@ -23,6 +23,7 @@ const getInfo = async function (keyword) {
     const dataStockx = JSON.stringify(product);
     // mkdir(dir);
     // writeFile(dir, "stockX.json", dataStockx);
+
     return product;
   } catch (error) {
     console.error(error);
@@ -75,7 +76,6 @@ async function getVariants(href) {
     variants.price = products[key].market.lowestAsk;
     return variants;
   });
-
   return result;
 }
 

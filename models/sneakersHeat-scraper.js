@@ -88,10 +88,11 @@ async function getVariants(meta, href) {
   sneakersHeat.variants = json;
   result.sneakersHeat = sneakersHeat;
 
-  const json2 = JSON.stringify(result);
+  // const json2 = JSON.stringify(result);
 
   // mkdir(dir);
   // writeFile(dir, "sneakersHeat.json", json2);
   return result;
 }
+getInfo("DB4612-300");
 module.exports = getInfo;

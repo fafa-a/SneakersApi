@@ -33,8 +33,9 @@ async function getInfo(keyword) {
     const pathname = data.slug;
     const href = product.href;
     const dataFlightClub = await getVariants(href, pathname, product);
-
-    return dataFlightClub;
+    const result = {};
+    result.flightClub = dataFlightClub;
+    return result;
   } catch (error) {
     console.error(error);
   }
@@ -74,7 +75,7 @@ async function getVariants(href, pathname, product) {
     const dataJson = {};
     dataJson.flightClub = product;
 
-    const dataWrite = JSON.stringify(dataJson);
+    // const dataWrite = JSON.stringify(dataJson);
 
     // const dir = "../data/";
     // fs.mkdir(dir, { recursive: true }, (err) => {
@@ -85,6 +86,7 @@ async function getVariants(href, pathname, product) {
     //   if (error) throw error;
     //   console.log("Job done");
     // });
+
     return product;
   } catch (error) {
     console.error(error);
