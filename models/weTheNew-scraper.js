@@ -1,13 +1,13 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const { mkdir, writeFile } = require("../utils/FS");
+// const { mkdir, writeFile } = require("../utils/FS");
 
 puppeteer.use(StealthPlugin());
-const dir = "../data/";
+// const dir = "../data/";
 
 async function getInfo(keyword) {
   try {
-    puppeteer.launch({ headless: true }).then(async (browser) => {
+    return puppeteer.launch({ headless: true }).then(async (browser) => {
       const page = await browser.newPage();
       page.setUserAgent(
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
@@ -40,11 +40,10 @@ async function getInfo(keyword) {
 
       const dataWeTheNew = await getVariants(meta, weTheNew);
       browser.close();
-      console.log(" WE THE NEW done");
       return dataWeTheNew;
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -66,10 +65,9 @@ async function getVariants(meta, weTheNew) {
   result.weTheNew = weTheNew;
   const json2 = JSON.stringify(result);
 
-  mkdir(dir);
+  // mkdir(dir);
 
-  writeFile(dir, "weTheNew.json", json2);
+  // writeFile(dir, "weTheNew.json", json2);
   return result;
 }
-
 module.exports = getInfo;

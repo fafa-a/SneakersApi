@@ -1,13 +1,13 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const { mkdir, writeFile } = require("../utils/FS");
-const dir = "../data/";
+// const { mkdir, writeFile } = require("../utils/FS");
+// const dir = "../data/";
 
 puppeteer.use(StealthPlugin());
 
 async function getInfo(keyword) {
   try {
-    puppeteer.launch({ headless: true }).then(async (browser) => {
+    return puppeteer.launch({ headless: true }).then(async (browser) => {
       const page = await browser.newPage();
       page.setUserAgent(
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
@@ -30,11 +30,11 @@ async function getInfo(keyword) {
 
       const dataSneakersHeat = await getVariants(meta, href);
       browser.close();
-      console.log("SNEAKERS HEAT done");
+
       return dataSneakersHeat;
     });
   } catch (error) {
-    console.log(error);
+    console.eror(error);
   }
 }
 
@@ -90,9 +90,8 @@ async function getVariants(meta, href) {
 
   const json2 = JSON.stringify(result);
 
-  mkdir(dir);
-  writeFile(dir, "sneakersHeat.json", json2);
-  console.log("Job done");
+  // mkdir(dir);
+  // writeFile(dir, "sneakersHeat.json", json2);
   return result;
 }
 module.exports = getInfo;

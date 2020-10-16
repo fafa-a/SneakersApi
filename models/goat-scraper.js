@@ -1,55 +1,47 @@
-const puppeteer = require("puppeteer-extra");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const got = require("got");
-const { mkdir, writeFile } = require("../utils/FS");
+// const { mkdir, writeFile } = require("../utils/FS");
 
-const dir = "../data/";
-
-puppeteer.use(StealthPlugin());
+// const dir = "../data/";
+const fetch = require("isomorphic-fetch");
+const key = require("../key.json");
 
 async function getInfo(keyword) {
   try {
-    puppeteer.launch({ headless: true, slowmo: 10 }).then(async (browser) => {
-      const page = await browser.newPage();
-      page.setUserAgent(
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15"
-      );
-      await page.goto(`https://www.goat.com/search?query=${keyword}`);
+    const response = await fetch(
+      `https://2fwotdvm2o-dsn.algolia.net/1/indexes/product_variants_v2/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.25.1&x-algolia-application-id=2FWOTDVM2O&x-algolia-api-key=${key.goat.algolia}`,
+      {
+        headers: {
+          accept: "application/json",
+          "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+          "content-type": "application/x-www-form-urlencoded",
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "cross-site",
+        },
+        referrer: "https://www.goat.com/",
+        referrerPolicy: "strict-origin-when-cross-origin",
+        body: `{\"params\":\"distinct=true&facetFilters=(product_category%3A%20shoes)%2C%20()&facets=%5B%22size%22%5D&hitsPerPage=48&numericFilters=%5B%5D&page=0&query=${keyword}&clickAnalytics=true\"}`,
+        method: "POST",
+        mode: "cors",
+      }
+    );
+    const data = await response.json();
+    const product = {};
+    (product.brandName = data.hits[0].brand_name),
+      (product.name = data.hits[0].name),
+      (product.sku = data.hits[0].sku),
+      (product.href =
+        "https://www.goat.com/" +
+        data.hits[0].product_type +
+        "/" +
+        data.hits[0].slug);
+    const pathname = data.hits[0].slug;
 
-      //captcha detect ?
-      // const text = await page.evaluate(() => {
-      //   return document.querySelector("h1").innerText;
-      // });
-      // console.log(text);
+    const dataGoat = await getVariants(pathname, product);
 
-      await page.click(
-        "#root > div > div.Dialog__Backdrop-sc-10pvy68-0.kECts.ChangeCurrencyModal__Dialog-sc-17cfdax-0.ezyStG > div > div > button.goat-button.secondary.align-center-justify-center.ChangeCurrencyModal__Button-sc-17cfdax-4.fpAmCQ"
-      );
-
-      const product = await page.evaluate(() => {
-        const docu = {};
-        docu.brandName = document.querySelector(
-          ".ProductTemplateGridCell__BrandName-sc-1yrb6b3-1"
-        ).innerText;
-        docu.name = document.querySelector(
-          ".ProductTemplateGridCell__Name-sc-1yrb6b3-2"
-        ).innerText;
-        docu.sku = document.querySelector(
-          ".HiddenInstantSearchBox__Input-sc-1vz7crx-0.kGCnlw"
-        ).value;
-        docu.href = document.querySelector(".iZedTG > a").href;
-        return docu;
-      });
-      const href = product.href;
-      const newPathname = href.slice(30);
-
-      const dataGoat = await getVariants(newPathname, product);
-      browser.close();
-      console.log("GOAT done");
-      return dataGoat;
-    });
+    return dataGoat;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -77,12 +69,13 @@ async function getVariants(newPathname, product) {
     result.goat = product;
     const json = JSON.stringify(result);
 
-    mkdir(dir);
-    writeFile(dir, "goat.json", json);
-    console.log("Goat data written");
+    // mkdir(dir);
+    // writeFile(dir, "goat.json", json);
+    // console.log("Goat data written");
     return result;
   } catch (error) {
-    console.log(error.response);
+    console.error(error);
   }
 }
+
 module.exports = getInfo;

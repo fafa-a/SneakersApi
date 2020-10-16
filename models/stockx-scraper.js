@@ -1,4 +1,3 @@
-// const got = require("got");
 const axios = require("axios");
 // const { mkdir, writeFile } = require("../utils/FS");
 // const dir = "../data/";
@@ -26,7 +25,7 @@ const getInfo = async function (keyword) {
     // writeFile(dir, "stockX.json", dataStockx);
     return product;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 async function getDataInfo(data) {

@@ -1,7 +1,7 @@
 const fetch = require("isomorphic-fetch");
 // const { mkdir, writeFile } = require("../utils/FS");
 const key = require("../key.json");
-const dir = "../data/";
+// const dir = "../data/";
 
 async function getInfo(keyword) {
   const url = "https://www.klekt.com/store/";
@@ -58,7 +58,7 @@ async function getInfo(keyword) {
 
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 module.exports = getInfo;
