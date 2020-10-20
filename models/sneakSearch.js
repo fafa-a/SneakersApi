@@ -5,22 +5,20 @@ const klekt = require("./klekt-scraper");
 const sneakersHeat = require("./sneakersHeat-scraper");
 const weTheNew = require("./weTheNew-scraper");
 
-console.time("x");
-
 const research = async (keyword) => {
-  const result = await Promise.all([
-    stockX(keyword),
-    flightClub(keyword),
-    goat(keyword),
-    klekt(keyword),
-    sneakersHeat(keyword),
-    weTheNew(keyword),
-  ]);
-
-  console.timeEnd("x");
-
-  return result;
+  try {
+    const result = await Promise.all([
+      stockX(keyword),
+      flightClub(keyword),
+      goat(keyword),
+      klekt(keyword),
+      sneakersHeat(keyword),
+      weTheNew(keyword),
+    ]);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-research("cz5624 100");
 module.exports = research;

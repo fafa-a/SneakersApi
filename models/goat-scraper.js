@@ -1,8 +1,9 @@
-const got = require("got");
+const fetch = require("isomorphic-fetch");
+const axios = require("axios");
+
 // const { mkdir, writeFile } = require("../utils/FS");
 
 // const dir = "../data/";
-const fetch = require("isomorphic-fetch");
 const key = require("../key.json");
 
 async function getInfo(keyword) {
@@ -47,14 +48,21 @@ async function getInfo(keyword) {
 
 async function getVariants(newPathname, product) {
   try {
-    const response = await got(
-      `https://www.goat.com/web-api/v1/product_variants?productTemplateId=${newPathname}`
+    const response = await axios.get(
+      `https://www.goat.com/web-api/v1/product_variants?productTemplateId=${newPathname}`,
+      {
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          "Access-Control-Allow-Origin": "*",
+          "User-Agent":
+            "Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36",
+        },
+      }
     );
 
-    const data = await response.body;
-    const jsonData = JSON.parse(data);
+    const { data } = response;
 
-    const array = Array.from(jsonData);
+    const array = Array.from(data);
     const items = Object.keys(array);
 
     const prodVariants = items.map((key) => {
@@ -72,12 +80,11 @@ async function getVariants(newPathname, product) {
     // mkdir(dir);
     // writeFile(dir, "goat.json", json);
     // console.log("Goat data written");
-
-
+    console.log(result);
     return result;
   } catch (error) {
     console.error(error);
   }
 }
-
+getInfo("DB4612-300");
 module.exports = getInfo;

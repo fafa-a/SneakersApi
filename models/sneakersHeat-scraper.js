@@ -69,7 +69,7 @@ async function getVariants(meta, href) {
     return sneakersHeat.brand;
   };
 
-  sneakersHeat.brand = searchName();
+  sneakersHeat.brandName = searchName();
   sneakersHeat.name = name;
   sneakersHeat.sku = sku;
   sneakersHeat.href = href;
@@ -94,5 +94,5 @@ async function getVariants(meta, href) {
   // writeFile(dir, "sneakersHeat.json", json2);
   return result;
 }
-getInfo("DB4612-300");
+
 module.exports = getInfo;
